@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zn">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pixi JS 置换滤镜效果</title>
+    <style>
+      .start-btn,
+      .stop-btn {
+        display: inline-block;
+        color: #fff;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        outline: none;
+        padding: 10px 20px;
+        margin-bottom: 30px;
+      }
+
+      .start-btn {
+        background-color: #0000ff;
+        box-shadow: 0 2px 25px rgba(255, 0, 130, 0.5);
+      }
+
+      .stop-btn {
+        background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+        margin-left: 20px;
+        box-shadow: 0 2px 25px rgba(22, 217, 227, 0.5);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <!-- <button class="start-btn">开始</button>
+      <button class="stop-btn">停止</button> -->
+      <button class="drawPoint" onclick="drawPoint()">标点</button>
+      <button class="drawPic" onclick="drawPic()">画图</button>
+      <button class="drawPicDone" onclick="drawPicDone()">画图完成</button>
+      <button class="showPic" onclick="showPic()">画图显示</button>
+    </div>
+    <div id="pixiContainer">
+      <div id="px-render"></div>
+    </div>
+
+    <script src="https://www.kkkk1000.com/js/pixi4.8.2.js"></script>
+    <script src="https://www.kkkk1000.com/js/tink.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.1/TweenMax.min.js"></script>
+    <script src="./mouseControll.js"></script>
+    <script src="./option.js"></script>
+
+    <script>
+      console.log(document.getElementById("pixiContainer").style.width);
+
+      // 创建一个 Pixi应用
+      var app = new PIXI.Application();
+      // 获取渲染器
+      var renderer = app.renderer;
+      // 背景图片精灵
+      var mapImg;
+      //舞台
+      var stage;
+      var playground = document.getElementById("px-render");
+      var url = "./chimeiMap25.jpg";
+      var largerDistanceX = 0;
+      var largerDistanceY = 0;
+
+      //点的xy轴集合
+      var pointList = [];
+      // renderer.view 是 Pixi 创建的一个canvas
+      // 把 Pixi 创建的 canvas 添加到页面上
+      playground.appendChild(renderer.view);
+      // 创建一个容器
+      stage = new PIXI.Container();
+      mapImg = PIXI.Sprite.fromImage(url);
+      // 设置置换图精灵为平铺模式
+      mapImg.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+
+      //图片初始化
+      mapImg.width = app.screen.width;
+      mapImg.height = app.screen.height;
+      CENTER.X = mapImg.width / 2;
+      CENTER.Y = mapImg.height / 2;
+
+      stage.addChild(mapImg);
+      // 把 stage 添加到根容器上
+      app.stage.addChild(stage);
+
+      //增加鼠标交互
+      let t = new Tink(PIXI, renderer.view);
+      let pointer = t.makePointer();
+      //画图的状态
+      this.drawing = false;
+      //标点状态
+      this.drawingPoint = false;
+
+      function drawPoint() {
+        this.drawingPoint = !this.drawingPoint;
+      }
+      function drawPic() {
+        this.drawing = !this.drawing;
+      }
+      function drawPicDone() {
+        this.drawing = false;
+        const graphics = new PIXI.Graphics();
+        graphics.lineStyle(0);
+        var colorNum =  Math.floor((Math.random()*4)+1);
+        console.log(colorNum)
+        var color=[0x3500FA,0xFFFF00,0xFF0000,0xFFA500]
+        graphics.beginFill(color[colorNum],0.5);
+        graphics.drawPolygon(pointList);
+        graphics.endFill();
+
+        stage.addChild(graphics);
+      }
+      function showPic() {
+
+        pointList=[]
+    }
+
+      //   pointer.press = () => console.log("触发 pressed 事件");
+      //   pointer.release = () => console.log("触发 released 事件");
+      clickLarger(pointer);
+
+      //   const texture = PIXI.Texture.from(
+      //     "https://pixijs.io/examples/examples/assets/bunny.png"
+      //   );
+    </script>
+  </body>
+</html>
